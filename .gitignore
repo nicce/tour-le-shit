@@ -1,3 +1,4 @@
-node_modules
-dist
-.env
+server/node_modules
+server/dist
+ui/node_modules
+

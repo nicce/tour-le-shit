@@ -2,13 +2,13 @@ import express from 'express';
 
 const router = express.Router();
 
-interface Scoreboard {
+interface Player {
     name: string;
     points: number;
     lastPlayed: string;
 }
 
-const leaderboard: Scoreboard[] = [
+const leaderboard: Player[] = [
     {
         name: 'Niclas',
         points: 231,
@@ -34,10 +34,16 @@ const leaderboard: Scoreboard[] = [
         points: 42,
         lastPlayed: '2020-07-14',
     },
+    {
+        name: 'Nina',
+        points: 42000,
+        lastPlayed: '2020-07-14',
+    },
 ];
 
 router.get('/', async (_req, res) => {
-    leaderboard.sort((a, b) => (b.points > a.points ? 1 : -1));
+    leaderboard.sort((a: Player, b: Player) => (b.points > a.points ? 1 : -1));
+    console.log('returning: ', leaderboard);
     res.json(leaderboard);
 });
 
