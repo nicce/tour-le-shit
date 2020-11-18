@@ -12,6 +12,7 @@ interface Player {
     name: string;
     points: number;
     lastPlayed: string;
+    holderOfSnek: boolean;
 }
 
 class Scoreboard extends Component {
@@ -47,7 +48,7 @@ class Scoreboard extends Component {
                                     {player.points}
                                 </TableCell>
                                 <TableCell>{player.lastPlayed}</TableCell>
-                                <TableCell>&#128013;</TableCell>
+                                <TableCell>{player.holderOfSnek ? String.fromCodePoint(0X1F40D) : ''}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

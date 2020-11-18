@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Niclas",
+    "points": 231,
+    "lastPlayed": "2020-11-23",
+    "holderOfSnek": true
+  },
+  {
+    "name": "Marcus",
+    "points": 421,
+    "lastPlayed": "2020-11-23",
+    "holderOfSnek": false
+  },
+  {
+    "name": "Viktor",
+    "points": 321,
+    "lastPlayed": "2020-11-23",
+    "holderOfSnek": false
+  },
+  {
+    "name": "Alexander",
+    "points": 543,
+    "lastPlayed": "2020-11-23",
+    "holderOfSnek": false
+  },
+  {
+    "name": "Johan",
+    "points": 42,
+    "lastPlayed": "2020-07-14",
+    "holderOfSnek": false
+  },
+  {
+    "name": "Nina",
+    "points": 42002,
+    "lastPlayed": "2020-07-14",
+    "holderOfSnek": false
+  }
+]
