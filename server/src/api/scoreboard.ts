@@ -1,6 +1,6 @@
 import express from 'express';
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from 'fs';
+import * as path from 'path';
 
 const router = express.Router();
 const scoreboardFileName = path.join(__dirname, '../../../scoreboard.json');
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
 
     // calculate new score for the affected players
     scoreboard.forEach((player, i) => {
-        if(player.name === score.name) {
+        if (player.name === score.name) {
             scoreboard[i] = calculateScore(score, player);
         }
     });
@@ -54,7 +54,7 @@ function calculateScore(score: Score, player: Player): Player {
     const eaglePoints = 3 * score.nettoEagles;
     const muliganPoints = 2 * score.muligans;
     const scorePoint = basePoint + tweetPoints + eaglePoints - muliganPoints;
-    
+
     player.points += scorePoint;
     player.lastPlayed = new Date().toISOString().split('T')[0];
     player.holderOfSnek = score.holderOfSnek;

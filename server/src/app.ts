@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http';
 import router from './api/routes';
-import bodyParser from "body-parser";
+import bodyParser from 'body-parser';
 
 const app = express();
 
