@@ -1,0 +1,6 @@
+MVP:
+* Refresh scoreboard when form is submitted
+* Support Heroku deploy
+
+1.1
+* Form validation

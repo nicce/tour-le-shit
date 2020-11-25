@@ -6,7 +6,7 @@ export async function GetScoreboard() {
 }
 
 export async function SubmitScorecard(body: string) {
-    fetch('/scorecard', {
+    fetch('/scoreboard', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',

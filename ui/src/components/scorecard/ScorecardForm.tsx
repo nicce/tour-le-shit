@@ -7,11 +7,24 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
+import { SubmitScorecard } from '../../services/ScoreboardService';
 
+type Scorecard = {
+  name: string;
+  points: number;
+  holderOfSnek: boolean;
+  nettoTweets: number;
+  nettoEagles: number;
+  muligans: number;
+}
 
 export function ScorecardForm() {
   const [name, setName] = React.useState('');
-  const [snek, setSnek] = React.useState('')
+  const [snek, setSnek] = React.useState('');
+  const [stablefordPoints, setStablefordPoints] = React.useState('');
+  const [nettoTweets, setNettoTweets] = React.useState('');
+  const [nettoEagles, setNettoEagles] = React.useState('');
+  const [muligans, setMuligans] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const names = [
     {
@@ -40,14 +53,6 @@ export function ScorecardForm() {
     },
   ];
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
-  const handleSnekChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSnek(event.target.value);
-  };
-
   const sneks = [
     {
       value: 'true',
@@ -66,8 +71,17 @@ export function ScorecardForm() {
     setOpen(false);
   };
 
-  const handleSubmit = () => {
-    
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    const scorecard: Scorecard = {
+      name: name,
+      holderOfSnek: snek === 'true' ? true : false,
+      points: +stablefordPoints,
+      nettoTweets: +nettoTweets,
+      nettoEagles: +nettoEagles,
+      muligans: +muligans
+    }
+    SubmitScorecard(JSON.stringify(scorecard));
     setOpen(false);
   }
   
@@ -84,65 +98,71 @@ export function ScorecardForm() {
             Please post your scorecard from your tour-le-shit round. We expect it went &#128169;
             except if your name is Alexander.
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            select
-            label="Name &#128169;"
-            value={name}
-            onChange={handleNameChange}
-            fullWidth
-          >
-            {names.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-          </TextField>
-          <TextField
-            margin="dense"
-            id="points"
-            label="Stableford points"
-            type="number"
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            id="holderOfTheSnake"
-            select
-            label="Snek?"
-            value={snek}
-            onChange={handleSnekChange}
-            fullWidth
-          >
-            {sneks.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-          </TextField>
-          <TextField
-            margin="dense"
-            id="nettoTweets"
-            label="Netto Birdies"
-            type="number"
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            id="nettoEagles"
-            label="Netto Eagle"
-            type="number"
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            id="muligans"
-            label="Muligans"
-            type="number"
-            fullWidth
-          />
+          <form>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              select
+              label="Name &#128169;"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              fullWidth
+            >
+              {names.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+            </TextField>
+            <TextField
+              margin="dense"
+              id="points"
+              label="Stableford points"
+              type="number"
+              onChange={e => setStablefordPoints(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              margin="dense"
+              id="holderOfTheSnake"
+              select
+              label="Snek?"
+              value={snek}
+              onChange={e => setSnek(e.target.value)}
+              fullWidth
+            >
+              {sneks.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+            </TextField>
+            <TextField
+              margin="dense"
+              id="nettoTweets"
+              label="Netto Birdies"
+              type="number"
+              onChange={e => setNettoTweets(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              margin="dense"
+              id="nettoEagles"
+              label="Netto Eagle"
+              type="number"
+              onChange={e => setNettoEagles(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              margin="dense"
+              id="muligans"
+              label="Muligans"
+              type="number"
+              onChange={e => setMuligans(e.target.value)}
+              fullWidth
+            />
+          </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
