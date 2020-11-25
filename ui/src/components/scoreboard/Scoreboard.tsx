@@ -23,7 +23,6 @@ class Scoreboard extends Component {
 
     componentDidMount() {
         GetScoreboard().then(res => {
-            console.log(res);
             this.setState({scoreboard: res});
         });
     }
@@ -31,7 +30,7 @@ class Scoreboard extends Component {
     render() {
         return (
             <TableContainer component={Paper}>
-                <Table size="small" aria-label="a dense table">
+                <Table size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
