@@ -17,6 +17,7 @@ interface Score {
     points: number;
     holderOfSnek: boolean;
     nettoTweets: number;
+    nettoEagles: number;
     muligans: number;
 }
 
@@ -50,8 +51,10 @@ router.post('/', async (req, res) => {
 function calculateScore(score: Score, player: Player): Player {
     const basePoint = score.points - 36 < 30 ? 30 : score.points - 36;
     const tweetPoints = 2 * score.nettoTweets;
-    const scorePoint = basePoint + tweetPoints - score.muligans;
-
+    const eaglePoints = 3 * score.nettoEagles;
+    const muliganPoints = 2 * score.muligans;
+    const scorePoint = basePoint + tweetPoints + eaglePoints - muliganPoints;
+    
     player.points += scorePoint;
     player.lastPlayed = new Date().toISOString().split('T')[0];
     player.holderOfSnek = score.holderOfSnek;
