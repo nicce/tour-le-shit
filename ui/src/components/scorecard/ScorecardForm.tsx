@@ -82,7 +82,7 @@ export function ScorecardForm() {
       muligans: +muligans
     }
     SubmitScorecard(JSON.stringify(scorecard));
-    setOpen(false);
+    setOpen(false); 
   }
   
 
