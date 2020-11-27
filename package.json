@@ -17,7 +17,7 @@
     "start": "node dist/src/app.js",
     "start:dev": "ts-node-dev --transpile-only src/app.ts",
     "test": "jest",
-    "heroku-postbuild": "cd ui && yarn install && yarn install --only=dev --no-shrinkwrap && yarn run build"
+    "heroku-postbuild": "yarn install && yarn build && cd ui && yarn install && yarn install --only=dev --no-shrinkwrap && yarn run build"
   },
   "devDependencies": {
     "@types/async": "^3.2.3",
