@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 app.use(router);
 
 const server = http.createServer(app);
-
-server.listen(8080, () => {
-    console.log('server is listening on 8080');
+const port = process.env.PORT || 8080;
+server.listen(port, () => {
+    console.log(`server is listening on ${port}`);
 });
