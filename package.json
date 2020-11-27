@@ -17,7 +17,8 @@
     "prestart": "npm run build",
     "start": "node dist/app.js",
     "start:dev": "ts-node-dev --transpile-only src/app.ts",
-    "test": "jest"
+    "test": "jest",
+    "heroku-postbuild": "cd ui && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
   },
   "devDependencies": {
     "@types/async": "^3.2.3",
