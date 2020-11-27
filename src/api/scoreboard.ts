@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const router = express.Router();
-const scoreboardFileName = path.join(__dirname, '../../../scoreboard.json');
+const scoreboardFileName = path.join(__dirname, '../../scoreboard.json');
 
 interface Player {
     name: string;

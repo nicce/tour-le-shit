@@ -1,5 +1,4 @@
-server/node_modules
-server/dist
+node_modules
+dist
 ui/node_modules
-dist/
 scoreboard.json
