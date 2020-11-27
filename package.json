@@ -15,10 +15,10 @@
     "lint": "eslint . --ext .ts --max-warnings=0",
     "lint:fix": "eslint . --ext .ts --fix",
     "prestart": "npm run build",
-    "start": "node dist/app.js",
+    "start": "node dist/src/app.js",
     "start:dev": "ts-node-dev --transpile-only src/app.ts",
     "test": "jest",
-    "heroku-postbuild": "cd ui && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
+    "heroku-postbuild": "cd ui && yarn install && yarn install --only=dev --no-shrinkwrap && yarn run build"
   },
   "devDependencies": {
     "@types/async": "^3.2.3",
