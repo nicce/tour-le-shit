@@ -14,7 +14,7 @@
     "build": "tsc",
     "lint": "eslint . --ext .ts --max-warnings=0",
     "lint:fix": "eslint . --ext .ts --fix",
-    "start": "node dist/app.js",
+    "start": "NODE_ENV=production node dist/app.js",
     "start:dev": "ts-node-dev --transpile-only src/app.ts",
     "test": "jest",
     "heroku-postbuild": "yarn install && yarn build && cd ui && yarn install && yarn install --only=dev --no-shrinkwrap && yarn run build"
