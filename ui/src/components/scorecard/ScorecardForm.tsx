@@ -47,10 +47,6 @@ export function ScorecardForm() {
       value: 'Marcus',
       label: 'Marcus'
     },
-    {
-      value: 'Gosesnosen',
-      label: 'Gosesnosen'
-    },
   ];
 
   const sneks = [

@@ -2,3 +2,4 @@ node_modules
 dist
 ui/node_modules
 scoreboard.json
+.env

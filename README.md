@@ -6,6 +6,7 @@ Keeping track of leaderboard during the season and holder of the snek! 🐍
 
 ### Start
 
+`docker-compose up`
 `yarn run start:dev`
 `cd ui && yarn start`
 
