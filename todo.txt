@@ -1,7 +1,0 @@
-MVP:
-* Store data in postgres db since there is no support in heroku for files
-
-1.1
-* Form validation
-* Introduce config module instead of using dotenv everywhere
-* Refresh scoreboard when form is submitted
