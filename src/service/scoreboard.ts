@@ -30,11 +30,12 @@ export async function getScoreboard(): Promise<Player[]> {
     try {
         const res = await client.query(query);
         return res.rows.map((row) => {
+            console.log(row);
             return {
                 name: row.name,
                 points: row.points,
-                holderOfSnek: row.holderOfSnek,
-                lastPlayed: row.lastPlayed,
+                holderOfSnek: row.holderofsnek,
+                lastPlayed: row.lastplayed,
             };
         });
     } catch (err) {
