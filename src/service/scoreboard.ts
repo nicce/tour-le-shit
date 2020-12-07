@@ -55,7 +55,9 @@ export async function addScoreToScoreboard(score: Score): Promise<void> {
         console.error(err);
         throw err;
     }
-    await updateSnek(score.name);
+    if (score.holderOfSnek) {
+        await updateSnek(score.name);
+    }
 }
 
 async function updateSnek(newSnekHolder: string) {
