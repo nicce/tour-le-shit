@@ -55,6 +55,18 @@ export async function addScoreToScoreboard(score: Score): Promise<void> {
         console.error(err);
         throw err;
     }
+    await updateSnek(score.name);
+}
+
+async function updateSnek(newSnekHolder: string) {
+    const query = 'UPDATE scoreboard set holderOfSnek=false where name !=$1';
+    const values = [newSnekHolder];
+    try {
+        await client.query(query, values);
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
 }
 
 async function getPlayer(name: string): Promise<Player> {

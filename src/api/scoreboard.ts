@@ -13,7 +13,7 @@ router.get('/', async (_req, res) => {
 
 router.post('/', async (req, res) => {
     const score = req.body as Score;
-    addScoreToScoreboard(score);
+    await addScoreToScoreboard(score);
     res.sendStatus(201);
 });
 
