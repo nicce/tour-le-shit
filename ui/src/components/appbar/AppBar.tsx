@@ -4,6 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { ScorecardForm } from '../scorecard/ScorecardForm';
+import { Refresh } from '../refresh/Refresh';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,6 +31,7 @@ export default function ButtonAppBar() {
                         Tour Le Shit &#128169;
                     </Typography>
                     <ScorecardForm />
+                    <Refresh />
                 </Toolbar>
             </AppBar>
         </div>

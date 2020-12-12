@@ -84,7 +84,7 @@ export function ScorecardForm() {
 
   return (
     <div>
-      <Button variant="outlined" color="inherit" onClick={handleClickOpen}>
+      <Button color="inherit" onClick={handleClickOpen}>
         +
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
