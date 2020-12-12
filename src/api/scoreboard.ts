@@ -7,7 +7,15 @@ const router = express.Router();
 
 router.get('/', async (_req, res) => {
     const scoreboard: Player[] = await getScoreboard();
-    scoreboard.sort((a: Player, b: Player) => (b.points > a.points ? 1 : -1));
+    scoreboard.sort((a: Player, b: Player) => {
+        if (b.lastPlayed === '') {
+            return -1;
+        }
+        if (a.lastPlayed === '') {
+            return 1;
+        }
+        return b.points > a.points ? 1 : -1;
+    });
     res.json(scoreboard);
 });
 
