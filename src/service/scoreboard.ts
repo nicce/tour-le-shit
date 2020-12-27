@@ -91,15 +91,26 @@ async function getPlayer(name: string): Promise<Player> {
 }
 
 function updatePlayerScore(score: Score, player: Player): Player {
-    const basePoint = score.points < 30 ? 30 - 36 : score.points - 36;
-    const tweetPoints = 2 * score.nettoTweets;
-    const eaglePoints = 3 * score.nettoEagles;
-    const muliganPoints = 2 * score.muligans;
-    const scorePoint = basePoint + tweetPoints + eaglePoints - muliganPoints;
-
+    const scorePoint = calculatePoints(score.points, score.nettoTweets, score.nettoEagles, score.muligans);
     player.points += scorePoint;
     player.lastPlayed = new Date().toISOString().split('T')[0];
     player.holderOfSnek = score.holderOfSnek;
 
     return player;
+}
+
+export function calculatePoints(
+    stablePoints: number,
+    nettoTweets: number,
+    nettoEagles: number,
+    muligans: number,
+): number {
+    let basePoint = stablePoints < 30 ? 30 - 36 : stablePoints - 36;
+    if (basePoint > 0) {
+        basePoint = basePoint * 2;
+    }
+    const tweetPoints = 2 * nettoTweets;
+    const eaglePoints = 3 * nettoEagles;
+    const muliganPoints = 2 * muligans;
+    return basePoint + tweetPoints + eaglePoints - muliganPoints;
 }

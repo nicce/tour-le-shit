@@ -16,7 +16,7 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "start": "NODE_ENV=production node dist/app.js",
     "start:dev": "ts-node-dev --transpile-only src/app.ts",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "heroku-postbuild": "yarn install && yarn build && cd ui && yarn install && yarn install --only=dev --no-shrinkwrap && yarn run build"
   },
   "devDependencies": {
@@ -43,7 +43,9 @@
     "bunyan-middleware": "^1.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "jest": "^26.6.3",
     "luxon": "^1.25.0",
-    "pg": "^8.5.1"
+    "pg": "^8.5.1",
+    "ts-jest": "^26.4.4"
   }
 }
