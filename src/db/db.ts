@@ -29,7 +29,8 @@ client.connect();
 export async function fetchScoreboard(): Promise<Player[]> {
     const qry = 'SELECT * from scoreboard';
     const res = await query(qry, []);
-    return res.rows.map((row) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return res.rows.map((row: any) => {
         return {
             name: row.name,
             points: row.points,
@@ -43,7 +44,8 @@ export async function findScores(name: string): Promise<Score[]> {
     const qry = 'SELECT * from score where name=$1';
     const values = [name];
     const res = await query(qry, values);
-    return res.rows.map((row) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return res.rows.map((row: any) => {
         return {
             name: row.name,
             points: row.points,
