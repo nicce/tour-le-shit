@@ -5,6 +5,7 @@ interface Score {
     nettoTweets: number;
     nettoEagles: number;
     muligans: number;
+    date: string;
 }
 
 export default Score;
