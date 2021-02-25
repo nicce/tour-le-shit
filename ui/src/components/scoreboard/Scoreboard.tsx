@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { GetPlayerScores, GetScoreboard } from '../../services/ScoreboardService';
+
 import {TableContainer} from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableCell from "@material-ui/core/TableCell";
@@ -28,9 +29,9 @@ interface Score {
     muligans: number;
     date: string
 }
-
-class Scoreboard extends Component {
     
+class Scoreboard extends Component {
+
     state = {
         scoreboard: [],
         scores: new Map(),
