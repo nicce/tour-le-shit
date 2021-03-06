@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { useState, useEffect } from 'react';
 import { GetPlayerScores, GetScoreboard } from '../../services/ScoreboardService';
 
 import {TableContainer} from "@material-ui/core";
@@ -29,22 +29,21 @@ interface Score {
     muligans: number;
     date: string
 }
-    
-class Scoreboard extends Component {
 
-    state = {
-        scoreboard: [],
-        scores: new Map(),
-        open: new Map(),
-    }
 
-    setOpen(name: string) {
-        const isOpen = this.state.open.get(name);
-        this.state.open.set(name, !isOpen);
-        this.setState({open: this.state.open})
-    }
+export default function Scoreboard(props: Player) {
 
-    componentDidMount() {
+    const [scoreboard, setScoreboard] = useState([])
+    const [ open, setOpen ] = useState(new Map())
+    const [ scores, setScores ] = useState(new Map())
+
+    const setOpens = (name: string) => {
+        const isOpen = open.get(name);
+        open.set(name, !isOpen);
+        setOpen(open)
+    };
+
+    useEffect(() => {
         let openState = new Map()
         GetScoreboard().then(res => {
             let scoresState = new Map();
@@ -55,77 +54,75 @@ class Scoreboard extends Component {
                 })
                 
             });
-            this.setState({scoreboard: res, scores: scoresState, open: openState});
+            setScoreboard(res)
+            setScores(scoresState)
+            setOpen(openState)
         });
-    }
+    }, []);
 
-    render() {
-        return (
-            <TableContainer component={Paper}>
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Points</TableCell>
-                            <TableCell>Last played</TableCell>
-                            <TableCell>Snek</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {this.state.scoreboard.map((player: Player) => (
-                            <React.Fragment>
-                                <TableRow key={player.name}>
-                                    <TableCell onClick={() => this.setOpen(player.name)}>{player.name}</TableCell>
-                                    <TableCell component="th" scope="row">
-                                        {player.points}
-                                    </TableCell>
-                                    <TableCell>{player.lastPlayed}</TableCell>
-                                    <TableCell>{player.holderOfSnek ? String.fromCodePoint(0X1F40D) : ''}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                                <Collapse in={this.state.open.get(player.name)} timeout="auto" unmountOnExit>
-                                    <Box margin={0}>
-                                    <Typography variant="h6" gutterBottom component="div">
-                                        History
-                                    </Typography>
-                                    <Table size="small" aria-label="purchases">
-                                        <TableHead>
-                                        <TableRow>
-                                            <TableCell>{String.fromCodePoint(0X1F4C5)}</TableCell>
-                                            <TableCell>{String.fromCodePoint(0X1F3CC)}</TableCell>
-                                            <TableCell>{String.fromCodePoint(0X1F426)}</TableCell>
-                                            <TableCell>{String.fromCodePoint(0X1F985)}</TableCell>
-                                            <TableCell>{String.fromCodePoint(0X1F40D)}</TableCell>
-                                            <TableCell>{String.fromCodePoint(0X1F373)}</TableCell>
-                                        </TableRow>
-                                        </TableHead>
-                                        {this.state.scores.get(player.name) ? 
-                                        <TableBody>
-                                        {this.state.scores.get(player.name).map((score: Score) => (
-                                            <TableRow key={score.date}>
-                                                <TableCell component="th" scope="row">{score.date}</TableCell>
-                                                <TableCell>{score.points}</TableCell>
-                                                <TableCell>{score.nettoTweets}</TableCell>
-                                                <TableCell>{score.nettoEagles}</TableCell>
-                                                <TableCell>{score.holderOfSnek ? String.fromCodePoint(0X1F40D) : ''}</TableCell>
-                                                <TableCell>{score.muligans}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                        </TableBody>
-                                        : <TableBody></TableBody>}
-                                    </Table>
-                                    </Box>
-                                </Collapse>
+    return (
+        <TableContainer component={Paper}>
+            <Table size="small">
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Name</TableCell>
+                        <TableCell>Points</TableCell>
+                        <TableCell>Last played</TableCell>
+                        <TableCell>Snek</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {scoreboard.map((player: Player) => (
+                        <React.Fragment>
+                            <TableRow key={player.name}>
+                                <TableCell onClick={() => setOpens(player.name)}>{player.name}</TableCell>
+                                <TableCell component="th" scope="row">
+                                    {player.points}
                                 </TableCell>
+                                <TableCell>{player.lastPlayed}</TableCell>
+                                <TableCell>{player.holderOfSnek ? String.fromCodePoint(0X1F40D) : ''}</TableCell>
                             </TableRow>
-                          </React.Fragment>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        );
-    }
+                            <TableRow>
+                            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                            <Collapse in={open.get(player.name)} timeout="auto" unmountOnExit>
+                                <Box margin={0}>
+                                <Typography variant="h6" gutterBottom component="div">
+                                    History
+                                </Typography>
+                                <Table size="small" aria-label="purchases">
+                                    <TableHead>
+                                    <TableRow>
+                                        <TableCell>{String.fromCodePoint(0X1F4C5)}</TableCell>
+                                        <TableCell>{String.fromCodePoint(0X1F3CC)}</TableCell>
+                                        <TableCell>{String.fromCodePoint(0X1F426)}</TableCell>
+                                        <TableCell>{String.fromCodePoint(0X1F985)}</TableCell>
+                                        <TableCell>{String.fromCodePoint(0X1F40D)}</TableCell>
+                                        <TableCell>{String.fromCodePoint(0X1F373)}</TableCell>
+                                    </TableRow>
+                                    </TableHead>
+                                    {scores.get(player.name) ? 
+                                    <TableBody>
+                                    {scores.get(player.name).map((score: Score) => (
+                                        <TableRow key={score.date}>
+                                            <TableCell component="th" scope="row">{score.date}</TableCell>
+                                            <TableCell>{score.points}</TableCell>
+                                            <TableCell>{score.nettoTweets}</TableCell>
+                                            <TableCell>{score.nettoEagles}</TableCell>
+                                            <TableCell>{score.holderOfSnek ? String.fromCodePoint(0X1F40D) : ''}</TableCell>
+                                            <TableCell>{score.muligans}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                    </TableBody>
+                                    : <TableBody></TableBody>}
+                                </Table>
+                                </Box>
+                            </Collapse>
+                            </TableCell>
+                        </TableRow>
+                        </React.Fragment>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
 }
-
-export default Scoreboard;
