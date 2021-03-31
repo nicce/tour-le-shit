@@ -47,6 +47,7 @@ export async function findScores(name: string): Promise<Score[]> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return res.rows.map((row: any) => {
         return {
+            id: row.id,
             name: row.name,
             points: row.points,
             holderOfSnek: row.holderofsnek,
@@ -56,20 +57,6 @@ export async function findScores(name: string): Promise<Score[]> {
             date: row.date,
         };
     });
-}
-
-export async function findPlayer(name: string): Promise<Player> {
-    const qry = 'SELECT * from scoreboard where name=$1';
-    const values = [name];
-    const res = await query(qry, values);
-    // Should only be one hit
-    const data = res.rows[0];
-    return {
-        points: data.points,
-        holderOfSnek: data.holderOfSnek,
-        lastPlayed: data.lastPlayed,
-        name: data.name,
-    };
 }
 
 export async function addScore(score: Score): Promise<void> {
@@ -89,7 +76,55 @@ export async function addScore(score: Score): Promise<void> {
     await updateScoreboard(score);
 }
 
-export async function updateScoreboard(score: Score): Promise<void> {
+export async function removeScore(id: number): Promise<void> {
+    const values = [id];
+    const select_qry = 'SELECT * FROM score where id=$1';
+    const delete_qry = 'DELETE FROM score where id=$1';
+
+    const res = await query(select_qry, values);
+    console.log('select works');
+    const score: Score = {
+        id: res.rows[0].id,
+        name: res.rows[0].name,
+        points: res.rows[0].points,
+        nettoTweets: res.rows[0].nettotweets,
+        nettoEagles: res.rows[0].nettoeagles,
+        muligans: res.rows[0].muligans,
+        date: res.rows[0].date,
+        holderOfSnek: res.rows[0].holderOfSnek,
+    };
+
+    await query(delete_qry, values);
+    console.log('delete works');
+    await removeFromScoreboard(score);
+    console.log('removeFromScoreboard works');
+}
+
+async function removeFromScoreboard(score: Score) {
+    console.log(score);
+    const points = calculatePoints(score.points, score.nettoTweets, score.nettoEagles, score.muligans);
+    console.log(points);
+    const qry = 'UPDATE scoreboard set points=points-$1, lastplayed=null, holderofsnek=false where name=$2';
+    const values = [points, score.name];
+
+    await query(qry, values);
+}
+
+async function findPlayer(name: string): Promise<Player> {
+    const qry = 'SELECT * from scoreboard where name=$1';
+    const values = [name];
+    const res = await query(qry, values);
+    // Should only be one hit
+    const data = res.rows[0];
+    return {
+        points: data.points,
+        holderOfSnek: data.holderOfSnek,
+        lastPlayed: data.lastPlayed,
+        name: data.name,
+    };
+}
+
+async function updateScoreboard(score: Score): Promise<void> {
     const player = await findPlayer(score.name);
     const updatedPlayer = updatePlayerScore(score, player);
     const qry = 'UPDATE scoreboard set points=$1, holderOfSnek=$2, lastPlayed=$3 where name=$4';
@@ -100,10 +135,15 @@ export async function updateScoreboard(score: Score): Promise<void> {
     }
 }
 
-async function updateSnekHolder(newSnekHolder: string) {
-    const qry = 'UPDATE scoreboard set holderOfSnek=false where name !=$1';
-    const values = [newSnekHolder];
-    await query(qry, values);
+function calculatePoints(stablePoints: number, nettoTweets: number, nettoEagles: number, muligans: number): number {
+    let basePoint = stablePoints < 30 ? 30 - 36 : stablePoints - 36;
+    if (basePoint > 0) {
+        basePoint = basePoint * 2;
+    }
+    const tweetPoints = 2 * nettoTweets;
+    const eaglePoints = 3 * nettoEagles;
+    const muliganPoints = 2 * muligans;
+    return basePoint + tweetPoints + eaglePoints - muliganPoints;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -111,7 +151,7 @@ async function query(qry: string, values: any[]): Promise<any> {
     try {
         return await client.query(qry, values);
     } catch (err) {
-        console.error(err);
+        console.log(err);
         throw err;
     }
 }
@@ -125,18 +165,8 @@ function updatePlayerScore(score: Score, player: Player): Player {
     return player;
 }
 
-export function calculatePoints(
-    stablePoints: number,
-    nettoTweets: number,
-    nettoEagles: number,
-    muligans: number,
-): number {
-    let basePoint = stablePoints < 30 ? 30 - 36 : stablePoints - 36;
-    if (basePoint > 0) {
-        basePoint = basePoint * 2;
-    }
-    const tweetPoints = 2 * nettoTweets;
-    const eaglePoints = 3 * nettoEagles;
-    const muliganPoints = 2 * muligans;
-    return basePoint + tweetPoints + eaglePoints - muliganPoints;
+async function updateSnekHolder(newSnekHolder: string) {
+    const qry = 'UPDATE scoreboard set holderOfSnek=false where name !=$1';
+    const values = [newSnekHolder];
+    await query(qry, values);
 }

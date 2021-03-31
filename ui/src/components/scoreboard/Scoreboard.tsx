@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { GetPlayerScores, GetScoreboard } from '../../services/ScoreboardService';
+import React, {Component} from 'react';
+import { GetPlayerScores, GetScoreboard, DeletePlayerScore } from '../../services/ScoreboardService';
 
 import {TableContainer} from "@material-ui/core";
 import Table from "@material-ui/core/Table";
@@ -11,6 +11,7 @@ import TableBody from "@material-ui/core/TableBody";
 import Collapse from '@material-ui/core/Collapse';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
 interface Player {
@@ -21,6 +22,7 @@ interface Player {
 }
 
 interface Score {
+    id: number;
     name: string;
     points: number;
     holderOfSnek: boolean;
@@ -29,21 +31,40 @@ interface Score {
     muligans: number;
     date: string
 }
+    
+class Scoreboard extends Component {
 
+    state = {
+        scoreboard: [],
+        scores: new Map(),
+        open: new Map(),
+    }
 
-export default function Scoreboard(props: Player) {
+    setOpen(name: string) {
+        const isOpen = this.state.open.get(name);
+        this.state.open.set(name, !isOpen);
+        this.setState({open: this.state.open})
+    }
 
-    const [scoreboard, setScoreboard] = useState([])
-    const [ open, setOpen ] = useState(new Map())
-    const [ scores, setScores ] = useState(new Map())
+    async deleteScore(id: number, name: string) {
+        console.log('first');
+        await DeletePlayerScore(id)
+        console.log('second');
+        let openState = new Map()
+        const res = await GetScoreboard()
+        let scoresState = new Map();
+        res.forEach( (player: Player) => {
+                openState.set(player.name, false);
+                GetPlayerScores(player.name).then(scores => {
+                    scoresState.set(player.name, scores);
+                })
+                
+            });
+        console.log('before setState');
+        this.setState({scoreboard: res, scores: scoresState, open: openState});
+    }
 
-    const setOpens = (name: string) => {
-        const isOpen = open.get(name);
-        open.set(name, !isOpen);
-        setOpen(open)
-    };
-
-    useEffect(() => {
+    componentDidMount() {
         let openState = new Map()
         GetScoreboard().then(res => {
             let scoresState = new Map();
@@ -54,75 +75,78 @@ export default function Scoreboard(props: Player) {
                 })
                 
             });
-            setScoreboard(res)
-            setScores(scoresState)
-            setOpen(openState)
+            this.setState({scoreboard: res, scores: scoresState, open: openState});
         });
-    }, []);
+    }
 
-    return (
-        <TableContainer component={Paper}>
-            <Table size="small">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Points</TableCell>
-                        <TableCell>Last played</TableCell>
-                        <TableCell>Snek</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {scoreboard.map((player: Player) => (
-                        <React.Fragment>
-                            <TableRow key={player.name}>
-                                <TableCell onClick={() => setOpens(player.name)}>{player.name}</TableCell>
-                                <TableCell component="th" scope="row">
-                                    {player.points}
-                                </TableCell>
-                                <TableCell>{player.lastPlayed}</TableCell>
-                                <TableCell>{player.holderOfSnek ? String.fromCodePoint(0X1F40D) : ''}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                            <Collapse in={open.get(player.name)} timeout="auto" unmountOnExit>
-                                <Box margin={0}>
-                                <Typography variant="h6" gutterBottom component="div">
-                                    History
-                                </Typography>
-                                <Table size="small" aria-label="purchases">
-                                    <TableHead>
-                                    <TableRow>
-                                        <TableCell>{String.fromCodePoint(0X1F4C5)}</TableCell>
-                                        <TableCell>{String.fromCodePoint(0X1F3CC)}</TableCell>
-                                        <TableCell>{String.fromCodePoint(0X1F426)}</TableCell>
-                                        <TableCell>{String.fromCodePoint(0X1F985)}</TableCell>
-                                        <TableCell>{String.fromCodePoint(0X1F40D)}</TableCell>
-                                        <TableCell>{String.fromCodePoint(0X1F373)}</TableCell>
-                                    </TableRow>
-                                    </TableHead>
-                                    {scores.get(player.name) ? 
-                                    <TableBody>
-                                    {scores.get(player.name).map((score: Score) => (
-                                        <TableRow key={score.date}>
-                                            <TableCell component="th" scope="row">{score.date}</TableCell>
-                                            <TableCell>{score.points}</TableCell>
-                                            <TableCell>{score.nettoTweets}</TableCell>
-                                            <TableCell>{score.nettoEagles}</TableCell>
-                                            <TableCell>{score.holderOfSnek ? String.fromCodePoint(0X1F40D) : ''}</TableCell>
-                                            <TableCell>{score.muligans}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                    </TableBody>
-                                    : <TableBody></TableBody>}
-                                </Table>
-                                </Box>
-                            </Collapse>
-                            </TableCell>
+    render() {
+        return (
+            <TableContainer component={Paper}>
+                <Table size="small">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell padding='none'>Name</TableCell>
+                            <TableCell padding='none'>Points</TableCell>
+                            <TableCell padding='none'>Last played</TableCell>
+                            <TableCell padding='none'>Snek</TableCell>
                         </TableRow>
-                        </React.Fragment>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    );
+                    </TableHead>
+                    <TableBody>
+                        {this.state.scoreboard.map((player: Player) => (
+                            <React.Fragment>
+                                <TableRow key={player.name}>
+                                    <TableCell padding='none' onClick={() => this.setOpen(player.name)}>{player.name}</TableCell>
+                                    <TableCell padding='none' component="th" scope="row">
+                                        {player.points}
+                                    </TableCell>
+                                    <TableCell padding='none'>{player.lastPlayed}</TableCell>
+                                    <TableCell padding='none'>{player.holderOfSnek ? String.fromCodePoint(0X1F40D) : ''}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                <TableCell style={{ paddingBottom: 10, paddingTop: 10 }} colSpan={6}>
+                                <Collapse in={this.state.open.get(player.name)} timeout="auto" unmountOnExit>
+                                    <Box margin={0}>
+                                    <Typography variant="h6" gutterBottom component="div">
+                                        History
+                                    </Typography>
+                                    <Table size="small" aria-label="purchases">
+                                        <TableHead>
+                                        <TableRow>
+                                            <TableCell padding='none'>{String.fromCodePoint(0X1F4C5)}</TableCell>
+                                            <TableCell padding='none'>{String.fromCodePoint(0X1F3CC)}</TableCell>
+                                            <TableCell padding='none'>{String.fromCodePoint(0X1F426)}</TableCell>
+                                            <TableCell padding='none'>{String.fromCodePoint(0X1F985)}</TableCell>
+                                            <TableCell padding='none'>{String.fromCodePoint(0X1F40D)}</TableCell>
+                                            <TableCell padding='none'>{String.fromCodePoint(0X1F373)}</TableCell>
+                                        </TableRow>
+                                        </TableHead>
+                                        {this.state.scores.get(player.name) ? 
+                                        <TableBody>
+                                        {this.state.scores.get(player.name).map((score: Score) => (
+                                            <TableRow key={score.id}>
+                                                <TableCell padding='none' component="th" scope="row">{score.date}</TableCell>
+                                                <TableCell padding='none'>{score.points}</TableCell>
+                                                <TableCell padding='none'>{score.nettoTweets}</TableCell>
+                                                <TableCell padding='none'>{score.nettoEagles}</TableCell>
+                                                <TableCell padding='none'>{score.holderOfSnek ? String.fromCodePoint(0X1F40D) : ''}</TableCell>
+                                                <TableCell padding='none'>{score.muligans}</TableCell>
+                                                <TableCell padding='none' onClick={() => this.deleteScore(score.id, player.name).then()}><DeleteIcon /></TableCell>
+                                            </TableRow>
+                                        ))}
+                                        </TableBody>
+                                        : <TableBody></TableBody>}
+                                    </Table>
+                                    </Box>
+                                </Collapse>
+                                </TableCell>
+                            </TableRow>
+                          </React.Fragment>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
+    }
 }
+
+export default Scoreboard;

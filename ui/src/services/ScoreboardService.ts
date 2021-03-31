@@ -19,3 +19,7 @@ export async function GetPlayerScores(name: string) {
     const response = await fetch('/score?name='+name);
     return await response.json();
 }
+
+export async function DeletePlayerScore(id: number) {
+    await fetch('/score/' + id, { method: 'DELETE' });
+}

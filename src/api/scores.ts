@@ -1,6 +1,6 @@
 import express from 'express';
 import Score from '../model/score';
-import { getScores } from '../service/scoreboard';
+import { getScores, deleteScore } from '../service/scoreboard';
 
 const router = express.Router();
 
@@ -11,6 +11,14 @@ router.get('/', async (req, res) => {
         return b.date > a.date ? 1 : -1;
     });
     res.json(scores);
+});
+
+router.delete('/:id', async (req, res) => {
+    console.log(req.params.id);
+    const id = Number(req.params.id);
+    console.log(id);
+    await deleteScore(id);
+    res.sendStatus(201);
 });
 
 export default router;

@@ -1,4 +1,5 @@
 interface Score {
+    id: number;
     name: string;
     points: number;
     holderOfSnek: boolean;
