@@ -1,14 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Scoreboard  from './components/scoreboard/Scoreboard';
-import ButtonAppBar from "./components/appbar/AppBar";
-import Info from './components/info/Info';
+import App  from './App';
 
-ReactDOM.render(
-    <React.StrictMode>
-        <ButtonAppBar />
-        <Scoreboard />
-        <Info/>
-    </React.StrictMode>,
-    document.getElementById('root')
-);
+ReactDOM.render(<App />, document.getElementById('root'));
+
+

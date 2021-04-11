@@ -27,7 +27,7 @@ if (process.env.NODE_ENV !== 'production') {
 client.connect();
 
 export async function fetchScoreboard(): Promise<Player[]> {
-    const qry = 'SELECT * from scoreboard';
+    const qry = 'SELECT name,points,holderofsnek,lastplayed from scoreboard';
     const res = await query(qry, []);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return res.rows.map((row: any) => {
@@ -41,7 +41,7 @@ export async function fetchScoreboard(): Promise<Player[]> {
 }
 
 export async function findScores(name: string): Promise<Score[]> {
-    const qry = 'SELECT * from score where name=$1';
+    const qry = 'SELECT id,name,points,holderofsnek,nettotweets,nettoeagles,muligans,date from score where name=$1';
     const values = [name];
     const res = await query(qry, values);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,11 +78,11 @@ export async function addScore(score: Score): Promise<void> {
 
 export async function removeScore(id: number): Promise<void> {
     const values = [id];
-    const select_qry = 'SELECT * FROM score where id=$1';
+    const select_qry =
+        'SELECT id,name,points,nettotweets,nettoeagles,muligans,date,holderofsnek FROM score where id=$1';
     const delete_qry = 'DELETE FROM score where id=$1';
 
     const res = await query(select_qry, values);
-    console.log('select works');
     const score: Score = {
         id: res.rows[0].id,
         name: res.rows[0].name,
@@ -95,23 +95,20 @@ export async function removeScore(id: number): Promise<void> {
     };
 
     await query(delete_qry, values);
-    console.log('delete works');
     await removeFromScoreboard(score);
-    console.log('removeFromScoreboard works');
 }
 
 async function removeFromScoreboard(score: Score) {
-    console.log(score);
     const points = calculatePoints(score.points, score.nettoTweets, score.nettoEagles, score.muligans);
-    console.log(points);
-    const qry = 'UPDATE scoreboard set points=points-$1, lastplayed=null, holderofsnek=false where name=$2';
-    const values = [points, score.name];
+    const lastPlayed = await getLastPlayedDate(score.name);
+    const qry = 'UPDATE scoreboard set points=points-$1, lastplayed=$2, holderofsnek=false where name=$3';
+    const values = [points, lastPlayed, score.name];
 
     await query(qry, values);
 }
 
 async function findPlayer(name: string): Promise<Player> {
-    const qry = 'SELECT * from scoreboard where name=$1';
+    const qry = 'SELECT points,holderofsnek,lastplayed,name from scoreboard where name=$1';
     const values = [name];
     const res = await query(qry, values);
     // Should only be one hit
@@ -169,4 +166,12 @@ async function updateSnekHolder(newSnekHolder: string) {
     const qry = 'UPDATE scoreboard set holderOfSnek=false where name !=$1';
     const values = [newSnekHolder];
     await query(qry, values);
+}
+
+async function getLastPlayedDate(name: string) {
+    const qry = 'SELECT MAX(date) as lastplayed from score where name=$1';
+    const values = [name];
+    const res = await query(qry, values);
+    const data = res.rows[0];
+    return data.lastplayed;
 }
