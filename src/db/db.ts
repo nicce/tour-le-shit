@@ -1,7 +1,6 @@
-import { Client } from 'pg';
 import dotenv from 'dotenv';
 import path from 'path';
-
+import { Client } from 'pg';
 import Player from '../model/player';
 import Score from '../model/score';
 

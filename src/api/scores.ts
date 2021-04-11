@@ -14,9 +14,7 @@ router.get('/', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-    console.log(req.params.id);
     const id = Number(req.params.id);
-    console.log(id);
     await deleteScore(id);
     res.sendStatus(201);
 });

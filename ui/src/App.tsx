@@ -1,6 +1,6 @@
 import React from 'react';
-import Scoreboard  from './components/scoreboard/Scoreboard';
-import ButtonAppBar from "./components/appbar/AppBar";
+import Scoreboard from './components/scoreboard/Scoreboard';
+import ButtonAppBar from './components/appbar/AppBar';
 import Info from './components/info/Info';
 
 export default function App() {
@@ -8,7 +8,7 @@ export default function App() {
         <React.StrictMode>
             <ButtonAppBar />
             <Scoreboard />
-            <Info/>
+            <Info />
         </React.StrictMode>
     );
 }
