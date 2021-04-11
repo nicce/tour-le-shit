@@ -16,7 +16,7 @@ export default function Info() {
 
   return (
     <div className={classes.root}>
-      {"1.0.1"}
+      {"1.0.2"}
     </div>
   );
 }
