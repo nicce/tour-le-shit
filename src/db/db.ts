@@ -58,7 +58,7 @@ export async function findScores(name: string): Promise<Score[]> {
     });
 }
 
-export async function addScore(score: Score): Promise<void> {
+export async function addScore(score: Score): Promise<Player[]> {
     const qry =
         'INSERT INTO score(name, points, holderOfSnek, nettoTweets, nettoEagles, muligans, date) VALUES($1, $2, $3, $4, $5, $6, $7)';
     const values = [
@@ -72,7 +72,7 @@ export async function addScore(score: Score): Promise<void> {
     ];
 
     await query(qry, values);
-    await updateScoreboard(score);
+    return await updateScoreboard(score);
 }
 
 export async function removeScore(id: number): Promise<void> {
@@ -120,7 +120,7 @@ async function findPlayer(name: string): Promise<Player> {
     };
 }
 
-async function updateScoreboard(score: Score): Promise<void> {
+async function updateScoreboard(score: Score): Promise<Player[]> {
     const player = await findPlayer(score.name);
     const updatedPlayer = updatePlayerScore(score, player);
     const qry = 'UPDATE scoreboard set points=$1, holderOfSnek=$2, lastPlayed=$3 where name=$4';
@@ -129,6 +129,7 @@ async function updateScoreboard(score: Score): Promise<void> {
     if (score.holderOfSnek) {
         await updateSnekHolder(score.name);
     }
+    return await fetchScoreboard();
 }
 
 function calculatePoints(stablePoints: number, nettoTweets: number, nettoEagles: number, muligans: number): number {

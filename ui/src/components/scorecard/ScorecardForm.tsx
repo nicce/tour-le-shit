@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -8,6 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import { SubmitScorecard } from '../../services/ScoreboardService';
+import { ControlPointSharp } from '@material-ui/icons';
 
 type Scorecard = {
     name: string;
@@ -18,14 +19,14 @@ type Scorecard = {
     muligans: number;
 };
 
-export function ScorecardForm() {
-    const [name, setName] = React.useState('');
-    const [snek, setSnek] = React.useState('');
-    const [stablefordPoints, setStablefordPoints] = React.useState('');
-    const [nettoTweets, setNettoTweets] = React.useState('');
-    const [nettoEagles, setNettoEagles] = React.useState('');
-    const [muligans, setMuligans] = React.useState('');
-    const [open, setOpen] = React.useState(false);
+export function ScorecardForm(props: { updateState: () => Promise<void> }) {
+    const [name, setName] = useState('');
+    const [snek, setSnek] = useState('');
+    const [stablefordPoints, setStablefordPoints] = useState('');
+    const [nettoTweets, setNettoTweets] = useState('');
+    const [nettoEagles, setNettoEagles] = useState('');
+    const [muligans, setMuligans] = useState('');
+    const [open, setOpen] = useState(false);
     const names = [
         {
             value: 'Niclas',
@@ -67,7 +68,7 @@ export function ScorecardForm() {
         setOpen(false);
     };
 
-    const handleSubmit = (event: any) => {
+    const handleSubmit = async (event: any) => {
         event.preventDefault();
         const scorecard: Scorecard = {
             name: name,
@@ -77,7 +78,9 @@ export function ScorecardForm() {
             nettoEagles: +nettoEagles,
             muligans: +muligans,
         };
-        SubmitScorecard(JSON.stringify(scorecard));
+        const body = await SubmitScorecard(JSON.stringify(scorecard));
+        console.log(body);
+        await props.updateState();
         setOpen(false);
     };
 
@@ -160,7 +163,7 @@ export function ScorecardForm() {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color='primary'>
+                    <Button onClick={handleClose} color='secondary'>
                         Cancel
                     </Button>
                     <Button onClick={handleSubmit} color='primary'>

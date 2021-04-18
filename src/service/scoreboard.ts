@@ -6,8 +6,8 @@ export async function getScoreboard(): Promise<Player[]> {
     return fetchScoreboard();
 }
 
-export async function addScoreToScoreboard(score: Score): Promise<void> {
-    await addScore(score);
+export async function addScoreToScoreboard(score: Score): Promise<Player[]> {
+    return await addScore(score);
 }
 
 export async function getScores(name: string): Promise<Score[]> {
