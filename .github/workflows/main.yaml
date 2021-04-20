@@ -26,7 +26,7 @@ jobs:
 
             # Runs a single command using the runners shell
             - name: Install dependecies
-              run: yarn Install
+              run: yarn install
 
             - name: Lint
               run: yarn run lint
