@@ -38,7 +38,6 @@ export default function ButtonAppBar() {
                 scoresState.set(player.name, scores);
             });
         });
-        console.log(res);
         setState({ scoreboard: res, scores: scoresState });
     };
 

@@ -8,7 +8,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import { SubmitScorecard } from '../../services/ScoreboardService';
-import { ControlPointSharp } from '@material-ui/icons';
 
 type Scorecard = {
     name: string;
@@ -22,11 +21,19 @@ type Scorecard = {
 export function ScorecardForm(props: { updateState: () => Promise<void> }) {
     const [name, setName] = useState('');
     const [snek, setSnek] = useState('');
-    const [stablefordPoints, setStablefordPoints] = useState('');
-    const [nettoTweets, setNettoTweets] = useState('');
-    const [nettoEagles, setNettoEagles] = useState('');
-    const [muligans, setMuligans] = useState('');
+    const [stablefordPoints, setStablefordPoints] = useState('0');
+    const [nettoTweets, setNettoTweets] = useState('0');
+    const [nettoEagles, setNettoEagles] = useState('0');
+    const [muligans, setMuligans] = useState('0');
     const [open, setOpen] = useState(false);
+    const validData: { [key: string]: string } = {
+        name: '.+',
+        points: '^[0-9]\\d*$',
+        snek: 'true|false|',
+        nettoTweets: '^[0-9]\\d*$',
+        nettoEagles: '^[0-9]\\d*$',
+        muligans: '^[0-9]\\d*$',
+    };
     const names = [
         {
             value: 'Niclas',
@@ -79,9 +86,38 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
             muligans: +muligans,
         };
         const body = await SubmitScorecard(JSON.stringify(scorecard));
-        console.log(body);
         await props.updateState();
         setOpen(false);
+    };
+
+    const isValid = (fieldName: string): boolean => {
+        const regex = new RegExp(validData[fieldName]);
+        switch (fieldName) {
+            case 'name':
+                return regex.test(name);
+            case 'snek':
+                return regex.test(snek);
+            case 'points':
+                return regex.test(stablefordPoints);
+            case 'nettoTweets':
+                return regex.test(nettoTweets);
+            case 'nettoEagles':
+                return regex.test(nettoEagles);
+            case 'muligans':
+                return regex.test(muligans);
+        }
+
+        return true;
+    };
+
+    const isFormValid = (): boolean => {
+        const fields = ['name', 'snek', 'points', 'nettoTweets', 'nettoEagles', 'muligans'];
+        for (let field of fields) {
+            if (!isValid(field)) {
+                return false;
+            }
+        }
+        return true;
     };
 
     return (
@@ -98,6 +134,8 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
                     </DialogContentText>
                     <form>
                         <TextField
+                            required={true}
+                            error={!isValid('name')}
                             autoFocus
                             margin='dense'
                             id='name'
@@ -114,6 +152,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
                             ))}
                         </TextField>
                         <TextField
+                            error={!isValid('points')}
                             margin='dense'
                             id='points'
                             label='Stableford points'
@@ -122,6 +161,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
                             fullWidth
                         />
                         <TextField
+                            error={!isValid('snek')}
                             margin='dense'
                             id='holderOfTheSnake'
                             select
@@ -137,6 +177,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
                             ))}
                         </TextField>
                         <TextField
+                            error={!isValid('nettoTweets')}
                             margin='dense'
                             id='nettoTweets'
                             label='Netto Birdies'
@@ -145,6 +186,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
                             fullWidth
                         />
                         <TextField
+                            error={!isValid('nettoEagles')}
                             margin='dense'
                             id='nettoEagles'
                             label='Netto Eagle'
@@ -153,6 +195,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
                             fullWidth
                         />
                         <TextField
+                            error={!isValid('muligans')}
                             margin='dense'
                             id='muligans'
                             label='Muligans'
@@ -166,7 +209,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
                     <Button onClick={handleClose} color='secondary'>
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} color='primary'>
+                    <Button disabled={!isFormValid()} onClick={handleSubmit} color='primary'>
                         Submit
                     </Button>
                 </DialogActions>
