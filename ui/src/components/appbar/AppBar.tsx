@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { ScorecardForm } from '../scorecard/ScorecardForm';
 import Scoreboard, { Player } from '../scoreboard/Scoreboard';
-import { Refresh } from '../refresh/Refresh';
+import PullToRefresh from 'react-simple-pull-to-refresh';
 import { GetPlayerScores, GetScoreboard } from '../../services/ScoreboardService';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,6 +41,10 @@ export default function ButtonAppBar() {
         setState({ scoreboard: res, scores: scoresState });
     };
 
+    const handleRefresh = async (): Promise<any> => {
+        window.location.reload();
+    };
+
     return (
         <div className={classes.root}>
             <AppBar position='static'>
@@ -49,10 +53,11 @@ export default function ButtonAppBar() {
                         Tour Le Shit &#128169;
                     </Typography>
                     <ScorecardForm updateState={fetchScoreboard} />
-                    <Refresh />
                 </Toolbar>
             </AppBar>
-            <Scoreboard players={state.scoreboard} scores={state.scores} updateState={fetchScoreboard} />
+            <PullToRefresh onRefresh={handleRefresh}>
+                <Scoreboard players={state.scoreboard} scores={state.scores} updateState={fetchScoreboard} />
+            </PullToRefresh>
         </div>
     );
 }
