@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TableContainer } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -9,8 +10,20 @@ import Collapse from '@material-ui/core/Collapse';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import IconButton from '@material-ui/core/IconButton';
 
 import { DeletePlayerScore } from '../../services/ScoreboardService';
+
+const useRowStyles = makeStyles({
+    root: {
+        '& > *': {
+            borderBottom: 'unset',
+        },
+    },
+    tableCell: {},
+});
 
 export type Player = {
     name: string;
@@ -36,6 +49,7 @@ export default function Scoreboard(props: {
     updateState: () => Promise<void>;
 }) {
     const [open, setOpen] = useState(new Map());
+    const classes = useRowStyles();
 
     const setOpens = (name: string) => {
         const isOpen = open.get(name);
@@ -63,19 +77,29 @@ export default function Scoreboard(props: {
             <Table size='medium'>
                 <TableHead>
                     <TableRow>
-                        <TableCell padding='none'>Name</TableCell>
-                        <TableCell padding='none'>Points</TableCell>
-                        <TableCell padding='none'>Last played</TableCell>
-                        <TableCell padding='none'>Snek</TableCell>
+                        <TableCell padding='none'></TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }} padding='none'>
+                            Name
+                        </TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }} padding='none'>
+                            Points
+                        </TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }} padding='none'>
+                            Last played
+                        </TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }} padding='none'>
+                            Snek
+                        </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {props.players.map((player: Player) => (
                         <React.Fragment key={player.name}>
-                            <TableRow>
-                                <TableCell padding='none' onClick={() => setOpens(player.name)}>
-                                    {player.name}
-                                </TableCell>
+                            <TableRow className={classes.root}>
+                                <IconButton aria-label='expand row' size='small' onClick={() => setOpens(player.name)}>
+                                    {open.get(player.name) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                </IconButton>
+                                <TableCell padding='none'>{player.name}</TableCell>
                                 <TableCell key={player.points} padding='none' component='th' scope='row'>
                                     {player.points}
                                 </TableCell>
@@ -84,8 +108,8 @@ export default function Scoreboard(props: {
                                     {player.holderOfSnek ? String.fromCodePoint(0x1f40d) : ''}
                                 </TableCell>
                             </TableRow>
-                            <TableRow>
-                                <TableCell style={{ paddingBottom: 10, paddingTop: 10 }} colSpan={6}>
+                            <TableRow className={classes.root}>
+                                <TableCell colSpan={6}>
                                     <Collapse in={open.get(player.name)} timeout='auto' unmountOnExit>
                                         <Box margin={0}>
                                             <Typography variant='h6' gutterBottom component='div'>

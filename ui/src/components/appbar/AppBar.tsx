@@ -49,12 +49,13 @@ export default function ButtonAppBar() {
         <div className={classes.root}>
             <AppBar position='static'>
                 <Toolbar>
-                    <Typography variant='h6' className={classes.title}>
+                    <Typography variant='h5' className={classes.title}>
                         Tour Le Shit &#128169;
                     </Typography>
                     <ScorecardForm updateState={fetchScoreboard} />
                 </Toolbar>
             </AppBar>
+            <div style={{ paddingTop: '10px' }}></div>
             <PullToRefresh onRefresh={handleRefresh}>
                 <Scoreboard players={state.scoreboard} scores={state.scores} updateState={fetchScoreboard} />
             </PullToRefresh>
