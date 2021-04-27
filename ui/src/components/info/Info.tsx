@@ -14,5 +14,5 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Info() {
     const classes = useStyles();
 
-    return <div className={classes.root}>{'1.1.0'}</div>;
+    return <div className={classes.root}>{'1.2.0'}</div>;
 }

@@ -1,5 +1,7 @@
 # tour-le-shit 💩
 
+![workflow](https://github.com/nicce/tour-le-shit/actions/workflows/main.yaml/badge.svg)
+
 Keeping track of leaderboard during the season and holder of the snek! 🐍
 
 ## Development
