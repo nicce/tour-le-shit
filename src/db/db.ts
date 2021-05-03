@@ -1,23 +1,20 @@
-import dotenv from 'dotenv';
-import path from 'path';
 import { Client } from 'pg';
 import Player from '../model/player';
 import Score from '../model/score';
-
-dotenv.config({ path: path.join(__dirname, '../../.env') });
+import config from '../config';
 
 let client: Client;
-if (process.env.NODE_ENV !== 'production') {
+if (config.env !== 'production') {
     client = new Client({
-        host: process.env.DATABASE_URL,
+        host: config.db.host,
         port: 5432,
-        user: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
+        user: config.db.user,
+        password: config.db.password,
         database: 'tourleshit',
     });
 } else {
     client = new Client({
-        connectionString: process.env.DATABASE_URL,
+        connectionString: config.db.host,
         ssl: {
             rejectUnauthorized: false,
         },

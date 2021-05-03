@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/async": "^3.2.3",
+    "@types/dotenv-defaults": "^2.0.0",
     "@types/express": "^4.17.8",
     "@types/luxon": "^1.25.0",
     "@types/pg": "^7.14.7",
@@ -41,6 +42,7 @@
     "bunyan": "^1.8.14",
     "bunyan-middleware": "^1.0.0",
     "dotenv": "^8.2.0",
+    "dotenv-defaults": "^2.0.1",
     "express": "^4.17.1",
     "luxon": "^1.25.0",
     "pg": "^8.5.1",

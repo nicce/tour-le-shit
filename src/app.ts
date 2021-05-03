@@ -1,19 +1,17 @@
-import dotenv from 'dotenv';
 import express from 'express';
 import http from 'http';
 import router from './api/routes';
 import bodyParser from 'body-parser';
 import * as path from 'path';
-
-dotenv.config({ path: path.join(__dirname, '../.env') });
+import config from './config';
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(router);
-console.log(process.env.NODE_ENV);
+console.log(config.env);
 // Serve frontend
-if (process.env.NODE_ENV === 'production') {
+if (config.env === 'production') {
     // Serve any static files
     app.use(express.static(path.join(__dirname, '../ui/build')));
     // Handle React routing, return all requests to React app
@@ -23,7 +21,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const server = http.createServer(app);
-const port = process.env.PORT || 8080;
-server.listen(port, () => {
-    console.log(`server is listening on ${port}`);
+server.listen(config.port, () => {
+    console.log(`server is listening on ${config.port}`);
 });
