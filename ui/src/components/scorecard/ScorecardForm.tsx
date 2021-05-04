@@ -8,6 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import { SubmitScorecard } from '../../services/ScoreboardService';
+import useSound from 'use-sound';
 
 type Scorecard = {
     name: string;
@@ -26,6 +27,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
     const [nettoEagles, setNettoEagles] = useState('0');
     const [muligans, setMuligans] = useState('0');
     const [open, setOpen] = useState(false);
+    const [playSnek] = useSound('./snek.mp3', { volume: 0.25 });
     const validData: { [key: string]: string } = {
         name: '.+',
         points: '^[0-9]\\d*$',
@@ -85,7 +87,10 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
             nettoEagles: +nettoEagles,
             muligans: +muligans,
         };
-        const body = await SubmitScorecard(JSON.stringify(scorecard));
+        if (scorecard.holderOfSnek) {
+            playSnek();
+        }
+        await SubmitScorecard(JSON.stringify(scorecard));
         await props.updateState();
         setOpen(false);
     };
