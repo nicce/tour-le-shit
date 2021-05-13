@@ -136,7 +136,7 @@ function calculatePoints(stablePoints: number, nettoTweets: number, nettoEagles:
     }
     const tweetPoints = 2 * nettoTweets;
     const eaglePoints = 3 * nettoEagles;
-    const muliganPoints = 2 * muligans;
+    const muliganPoints = 3 * muligans;
     return basePoint + tweetPoints + eaglePoints - muliganPoints;
 }
 
