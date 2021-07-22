@@ -185,7 +185,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
                             error={!isValid('nettoTweets')}
                             margin='dense'
                             id='nettoTweets'
-                            label='Netto Birdies'
+                            label='Birdies'
                             type='number'
                             onChange={(e) => setNettoTweets(e.target.value)}
                             fullWidth
@@ -194,7 +194,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
                             error={!isValid('nettoEagles')}
                             margin='dense'
                             id='nettoEagles'
-                            label='Netto Eagle'
+                            label='Eagles'
                             type='number'
                             onChange={(e) => setNettoEagles(e.target.value)}
                             fullWidth

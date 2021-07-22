@@ -130,14 +130,10 @@ async function updateScoreboard(score: Score): Promise<Player[]> {
 }
 
 function calculatePoints(stablePoints: number, nettoTweets: number, nettoEagles: number, muligans: number): number {
-    let basePoint = stablePoints < 30 ? 30 - 36 : stablePoints - 36;
-    if (basePoint > 0) {
-        basePoint = basePoint * 2;
-    }
     const tweetPoints = 2 * nettoTweets;
     const eaglePoints = 3 * nettoEagles;
     const muliganPoints = 3 * muligans;
-    return basePoint + tweetPoints + eaglePoints - muliganPoints;
+    return stablePoints + tweetPoints + eaglePoints - muliganPoints;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
