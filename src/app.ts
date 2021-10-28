@@ -1,26 +1,32 @@
-import express from 'express';
-import http from 'http';
-import router from './api/routes';
-import bodyParser from 'body-parser';
-import * as path from 'path';
 import config from './config';
+import { createServer } from './server';
+import { Client } from 'pg';
+import { ScoreboardService } from './service/scoreboard';
+import { ScoreboardRepository } from './db/db';
 
-const app = express();
+const main = () => {
+    let client: Client;
+    if (config.env !== 'production') {
+        client = new Client({
+            host: config.db.host,
+            port: 5432,
+            user: config.db.user,
+            password: config.db.password,
+            database: 'tourleshit',
+        });
+    } else {
+        client = new Client({
+            connectionString: config.db.host,
+            ssl: {
+                rejectUnauthorized: false,
+            },
+        });
+    }
 
-app.use(bodyParser.json());
-app.use(router);
-console.log(config.env);
-// Serve frontend
-if (config.env === 'production') {
-    // Serve any static files
-    app.use(express.static(path.join(__dirname, '../ui/build')));
-    // Handle React routing, return all requests to React app
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../ui/build', 'index.html'));
-    });
-}
+    const scoreboardService = new ScoreboardService(new ScoreboardRepository(client));
 
-const server = http.createServer(app);
-server.listen(config.port, () => {
-    console.log(`server is listening on ${config.port}`);
-});
+    const app = createServer({ env: config.env, scoreboardService: scoreboardService });
+    return app.listen(config.port);
+};
+
+main();

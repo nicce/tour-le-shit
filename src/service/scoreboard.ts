@@ -1,19 +1,23 @@
+import { ScoreboardRepository } from '../db/db';
 import Player from '../model/player';
 import Score from '../model/score';
-import { fetchScoreboard, addScore, findScores, removeScore } from '../db/db';
 
-export async function getScoreboard(): Promise<Player[]> {
-    return fetchScoreboard();
-}
+export class ScoreboardService {
+    constructor(private scoreboardRepository: ScoreboardRepository) {}
 
-export async function addScoreToScoreboard(score: Score): Promise<Player[]> {
-    return await addScore(score);
-}
+    async getScoreboard(): Promise<Player[]> {
+        return this.scoreboardRepository.fetchScoreboard();
+    }
 
-export async function getScores(name: string): Promise<Score[]> {
-    return await findScores(name);
-}
+    async addScoreToScoreboard(score: Score): Promise<Player[]> {
+        return await this.scoreboardRepository.addScore(score);
+    }
 
-export async function deleteScore(id: number): Promise<void> {
-    return await removeScore(id);
+    async getScores(name: string): Promise<Score[]> {
+        return await this.scoreboardRepository.findScores(name);
+    }
+
+    async deleteScore(id: number): Promise<void> {
+        return await this.scoreboardRepository.removeScore(id);
+    }
 }
