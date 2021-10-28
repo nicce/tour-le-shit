@@ -79,7 +79,7 @@ export class ScoreboardRepository {
         await this.removeFromScoreboard(score);
     }
 
-    private async removeFromScoreboard(score: Score) {
+    private async removeFromScoreboard(score: Score): Promise<void> {
         const points = this.calculatePoints(score.points, score.nettoTweets, score.nettoEagles, score.muligans);
         const lastPlayed = await this.getLastPlayedDate(score.name);
         const qry = 'UPDATE scoreboard set points=points-$1, lastplayed=$2, holderofsnek=false where name=$3';
@@ -140,13 +140,13 @@ export class ScoreboardRepository {
         return player;
     }
 
-    async updateSnekHolder(newSnekHolder: string) {
+    async updateSnekHolder(newSnekHolder: string): Promise<void> {
         const qry = 'UPDATE scoreboard set holderOfSnek=false where name !=$1';
         const values = [newSnekHolder];
         await this.query(qry, values);
     }
 
-    async getLastPlayedDate(name: string) {
+    async getLastPlayedDate(name: string): Promise<string> {
         const qry = 'SELECT MAX(date) as lastplayed from score where name=$1';
         const values = [name];
         const res = await this.query(qry, values);

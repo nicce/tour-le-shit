@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
 import Player from '../model/player';
 import Score from '../model/score';
 import { ScoreboardService } from '../service/scoreboard';
