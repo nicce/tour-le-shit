@@ -2,7 +2,7 @@ import config from './config';
 import { createServer } from './server';
 import { Client } from 'pg';
 import { ScoreboardService } from './service/scoreboard';
-import { ScoreboardRepository } from './db/db';
+import { ScoreboardRepository } from './repository/scoreboard';
 
 const main = () => {
     let client: Client;

@@ -1,4 +1,4 @@
-import { ScoreboardRepository } from '../db/db';
+import { ScoreboardRepository } from '../repository/scoreboard';
 import Player from '../model/player';
 import Score from '../model/score';
 

@@ -1,6 +1,9 @@
-import { Client } from 'pg';
+import { Client, QueryResult } from 'pg';
 import Player from '../model/player';
 import Score from '../model/score';
+import { query } from './db';
+import { PlayerEntity } from './model/playerEntity';
+import { ScoreEntity } from './model/scoreEntity';
 
 export class ScoreboardRepository {
     constructor(private client: Client) {
@@ -9,9 +12,9 @@ export class ScoreboardRepository {
 
     async fetchScoreboard(): Promise<Player[]> {
         const qry = 'SELECT name,points,holderofsnek,lastplayed from scoreboard';
-        const res = await this.query(qry, []);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return res.rows.map((row: any) => {
+        const res: QueryResult<PlayerEntity> = await query<PlayerEntity>(this.client, qry, []);
+
+        return res.rows.map((row: PlayerEntity) => {
             return {
                 name: row.name,
                 points: row.points,
@@ -24,9 +27,9 @@ export class ScoreboardRepository {
     async findScores(name: string): Promise<Score[]> {
         const qry = 'SELECT id,name,points,holderofsnek,nettotweets,nettoeagles,muligans,date from score where name=$1';
         const values = [name];
-        const res = await this.query(qry, values);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return res.rows.map((row: any) => {
+        const res: QueryResult<ScoreEntity> = await query<ScoreEntity>(this.client, qry, values);
+
+        return res.rows.map((row: ScoreEntity) => {
             return {
                 id: row.id,
                 name: row.name,
@@ -53,7 +56,7 @@ export class ScoreboardRepository {
             new Date().toISOString().split('T')[0],
         ];
 
-        await this.query(qry, values);
+        await query(this.client, qry, values);
         return await this.updateScoreboard(score);
     }
 
@@ -63,7 +66,7 @@ export class ScoreboardRepository {
             'SELECT id,name,points,nettotweets,nettoeagles,muligans,date,holderofsnek FROM score where id=$1';
         const delete_qry = 'DELETE FROM score where id=$1';
 
-        const res = await this.query(select_qry, values);
+        const res = await query<ScoreEntity>(this.client, select_qry, values);
         const score: Score = {
             id: res.rows[0].id,
             name: res.rows[0].name,
@@ -72,10 +75,10 @@ export class ScoreboardRepository {
             nettoEagles: res.rows[0].nettoeagles,
             muligans: res.rows[0].muligans,
             date: res.rows[0].date,
-            holderOfSnek: res.rows[0].holderOfSnek,
+            holderOfSnek: res.rows[0].holderofsnek,
         };
 
-        await this.query(delete_qry, values);
+        await query(this.client, delete_qry, values);
         await this.removeFromScoreboard(score);
     }
 
@@ -85,19 +88,19 @@ export class ScoreboardRepository {
         const qry = 'UPDATE scoreboard set points=points-$1, lastplayed=$2, holderofsnek=false where name=$3';
         const values = [points, lastPlayed, score.name];
 
-        await this.query(qry, values);
+        await query(this.client, qry, values);
     }
 
     private async findPlayer(name: string): Promise<Player> {
         const qry = 'SELECT points,holderofsnek,lastplayed,name from scoreboard where name=$1';
         const values = [name];
-        const res = await this.query(qry, values);
+        const res = await query<PlayerEntity>(this.client, qry, values);
         // Should only be one hit
         const data = res.rows[0];
         return {
             points: data.points,
-            holderOfSnek: data.holderOfSnek,
-            lastPlayed: data.lastPlayed,
+            holderOfSnek: data.holderofsnek,
+            lastPlayed: data.lastplayed,
             name: data.name,
         };
     }
@@ -107,7 +110,7 @@ export class ScoreboardRepository {
         const updatedPlayer = this.updatePlayerScore(score, player);
         const qry = 'UPDATE scoreboard set points=$1, holderOfSnek=$2, lastPlayed=$3 where name=$4';
         const values = [updatedPlayer.points, updatedPlayer.holderOfSnek, updatedPlayer.lastPlayed, updatedPlayer.name];
-        await this.query(qry, values);
+        await query(this.client, qry, values);
         if (score.holderOfSnek) {
             await this.updateSnekHolder(score.name);
         }
@@ -119,16 +122,6 @@ export class ScoreboardRepository {
         const eaglePoints = 3 * nettoEagles;
         const muliganPoints = 3 * muligans;
         return stablePoints + tweetPoints + eaglePoints - muliganPoints;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private async query(qry: string, values: any[]): Promise<any> {
-        try {
-            return await this.client.query(qry, values);
-        } catch (err) {
-            console.log(err);
-            throw err;
-        }
     }
 
     private updatePlayerScore(score: Score, player: Player): Player {
@@ -143,13 +136,13 @@ export class ScoreboardRepository {
     async updateSnekHolder(newSnekHolder: string): Promise<void> {
         const qry = 'UPDATE scoreboard set holderOfSnek=false where name !=$1';
         const values = [newSnekHolder];
-        await this.query(qry, values);
+        await query(this.client, qry, values);
     }
 
     async getLastPlayedDate(name: string): Promise<string> {
         const qry = 'SELECT MAX(date) as lastplayed from score where name=$1';
         const values = [name];
-        const res = await this.query(qry, values);
+        const res = await query<{ lastplayed: string }>(this.client, qry, values);
         const data = res.rows[0];
         return data.lastplayed;
     }
