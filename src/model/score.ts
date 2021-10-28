@@ -7,6 +7,7 @@ interface Score {
     nettoEagles: number;
     muligans: number;
     date: string;
+    season: number;
 }
 
 export default Score;

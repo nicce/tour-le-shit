@@ -12,10 +12,10 @@ export interface ServerOptions {
 
 export const createServer = (servierOptions: ServerOptions): Express => {
     const app = express();
+    app.use(bodyParser.json());
     app.use('/scoreboard', createScoreboardRouter(servierOptions.scoreboardService));
     app.use('/score', createScoreRouter(servierOptions.scoreboardService));
 
-    app.use(bodyParser.json());
     // Serve frontend
     if (servierOptions.env === 'production') {
         // Serve any static files

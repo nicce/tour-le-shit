@@ -3,4 +3,5 @@ export interface PlayerEntity {
     points: number;
     holderofsnek: boolean;
     lastplayed: string;
+    season: number;
 }

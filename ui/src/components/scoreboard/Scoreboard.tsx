@@ -30,6 +30,7 @@ export type Player = {
     points: number;
     lastPlayed: string;
     holderOfSnek: boolean;
+    season: number;
 };
 
 type Score = {
@@ -41,6 +42,7 @@ type Score = {
     nettoEagles: number;
     muligans: number;
     date: string;
+    season: number;
 };
 
 export default function Scoreboard(props: {

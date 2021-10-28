@@ -1,5 +1,5 @@
-export async function GetScoreboard() {
-    const response = await fetch('/scoreboard');
+export async function GetScoreboard(season: number) {
+    const response = await fetch(`/scoreboard?season=${season}`);
     return await response.json();
 }
 
@@ -14,8 +14,8 @@ export async function SubmitScorecard(body: string) {
     });
 }
 
-export async function GetPlayerScores(name: string) {
-    const response = await fetch('/score?name=' + name);
+export async function GetPlayerScores(name: string, season: number) {
+    const response = await fetch(`/score?name=${name}&season=${season}`);
     return await response.json();
 }
 

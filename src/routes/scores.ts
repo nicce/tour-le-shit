@@ -7,7 +7,12 @@ export const createScoreRouter = (scoreboardService: ScoreboardService): Router 
 
     router.get('/', async (req, res) => {
         const name: string = req.query.name as string;
-        const scores: Score[] = await scoreboardService.getScores(name);
+        const season: string = req.query.season as string;
+        if (!name || !season) {
+            throw new Error('name and season must be included');
+        }
+
+        const scores: Score[] = await scoreboardService.getScores(name, parseInt(season));
         scores.sort((a: Score, b: Score) => {
             return b.date > a.date ? 1 : -1;
         });
