@@ -9,6 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import { SubmitScorecard } from '../../services/ScoreboardService';
 import useSound from 'use-sound';
+import season from '../season';
 
 type Scorecard = {
     name: string;
@@ -17,6 +18,7 @@ type Scorecard = {
     nettoTweets: number;
     nettoEagles: number;
     muligans: number;
+    season: number;
 };
 
 export function ScorecardForm(props: { updateState: () => Promise<void> }) {
@@ -86,6 +88,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
             nettoTweets: +nettoTweets,
             nettoEagles: +nettoEagles,
             muligans: +muligans,
+            season: season,
         };
         if (scorecard.holderOfSnek) {
             playSnek();

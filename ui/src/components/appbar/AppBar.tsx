@@ -7,6 +7,7 @@ import { ScorecardForm } from '../scorecard/ScorecardForm';
 import Scoreboard, { Player } from '../scoreboard/Scoreboard';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import { GetPlayerScores, GetScoreboard } from '../../services/ScoreboardService';
+import season from '../season';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,10 +32,10 @@ export default function ButtonAppBar() {
     }, []);
 
     const fetchScoreboard = async () => {
-        const res = await GetScoreboard();
+        const res = await GetScoreboard(season);
         let scoresState = new Map();
         res.forEach((player: Player) => {
-            GetPlayerScores(player.name).then((scores) => {
+            GetPlayerScores(player.name, season).then((scores) => {
                 scoresState.set(player.name, scores);
             });
         });

@@ -7,4 +7,5 @@ export interface ScoreEntity {
     nettoeagles: number;
     muligans: number;
     date: string;
+    season: number;
 }
