@@ -7,7 +7,7 @@ export class Repository {
     constructor(client: Client) {
         this.client = client;
         this.client.connect();
-        migrate({ client }, path.join(__dirname, './migrations')).catch((error) => {
+        migrate({ client }, path.join(__dirname, '../../assets')).catch((error) => {
             throw new Error(error);
         });
     }
