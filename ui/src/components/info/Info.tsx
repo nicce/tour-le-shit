@@ -1,10 +1,9 @@
 import React from 'react';
-import { useTheme } from '@mui/styles';
 import { Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 export default function Info() {
     const theme = useTheme();
-
     return (
         <Typography
             component='p'

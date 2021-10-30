@@ -9,7 +9,6 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Theme,
     Typography,
 } from '@mui/material';
 import React, { useState, useEffect } from 'react';
@@ -17,9 +16,10 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { DeletePlayerScore } from '../../services/ScoreboardService';
-import { makeStyles, createStyles, useTheme } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             '& > *': {
