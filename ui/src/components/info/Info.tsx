@@ -1,18 +1,17 @@
 import React from 'react';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            ...theme.typography.overline,
-            backgroundColor: theme.palette.background.paper,
-            padding: theme.spacing(1),
-        },
-    }),
-);
+import { useTheme } from '@mui/styles';
+import { Typography } from '@mui/material';
 
 export default function Info() {
-    const classes = useStyles();
+    const theme = useTheme();
 
-    return <div className={classes.root}>{'1.2.1'}</div>;
+    return (
+        <Typography
+            component='p'
+            color='secondary'
+            style={{ paddingTop: theme.spacing(2), margin: 'auto', maxWidth: '600px' }}
+        >
+            v{'1.2.1'}
+        </Typography>
+    );
 }

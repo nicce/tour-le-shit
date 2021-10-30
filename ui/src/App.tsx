@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@material-ui/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import React from 'react';
 import ButtonAppBar from './components/appbar/AppBar';
 import Info from './components/info/Info';
