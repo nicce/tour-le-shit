@@ -1,6 +1,6 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@mui/material/styles';
 
-const rawTheme = createMuiTheme({
+const rawTheme = createTheme({
     typography: {
         fontFamily: [
             '-apple-system',
@@ -17,14 +17,14 @@ const rawTheme = createMuiTheme({
     },
     palette: {
         primary: {
-            light: '#b2fab4',
-            main: '#81c784',
-            dark: '#519657',
+            light: '#367d77',
+            main: '#045D56',
+            dark: '#02413c',
         },
         secondary: {
-            light: '#c1d5e0',
-            main: '#90a4ae',
-            dark: '#62757f',
+            light: '#7f8183',
+            main: '#535556',
+            dark: '#2a2c2d',
         },
     },
 });

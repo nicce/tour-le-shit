@@ -1,35 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import { ScorecardForm } from '../scorecard/ScorecardForm';
+import { SeasonMenu } from '../seasonmenu/SeasonMenu';
 import Scoreboard, { Player } from '../scoreboard/Scoreboard';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import { GetPlayerScores, GetScoreboard } from '../../services/ScoreboardService';
-import season from '../season';
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            flexGrow: 1,
-        },
-        menuButton: {
-            marginRight: theme.spacing(2),
-        },
-        title: {
-            flexGrow: 1,
-        },
-    }),
-);
+import { AppBar, Toolbar, Typography } from '@mui/material';
+import currentSeason from '../season';
 
 export default function ButtonAppBar() {
-    const classes = useStyles();
     const [state, setState] = useState({ scoreboard: [], scores: new Map() });
-
+    const [season, setSeason] = useState(currentSeason); // Default season, will be changed to 2 next year.
     useEffect(() => {
         fetchScoreboard();
-    }, []);
+    }, [season]);
 
     const fetchScoreboard = async () => {
         const res = await GetScoreboard(season);
@@ -47,19 +30,19 @@ export default function ButtonAppBar() {
     };
 
     return (
-        <div className={classes.root}>
-            <AppBar position='static'>
+        <>
+            <AppBar position='static' sx={{ maxWidth: '600px', margin: ' auto', borderRadius: 2 }}>
                 <Toolbar>
-                    <Typography variant='h5' className={classes.title}>
+                    <Typography variant='h5' component='h1' sx={{ flexGrow: 1 }}>
                         Tour Le Shit &#128169;
                     </Typography>
-                    <ScorecardForm updateState={fetchScoreboard} />
+                    <ScorecardForm season={season} updateState={fetchScoreboard} />
+                    <SeasonMenu season={season} setSeason={setSeason} />
                 </Toolbar>
             </AppBar>
-            <div style={{ paddingTop: '10px' }}></div>
             <PullToRefresh onRefresh={handleRefresh}>
                 <Scoreboard players={state.scoreboard} scores={state.scores} updateState={fetchScoreboard} />
             </PullToRefresh>
-        </div>
+        </>
     );
 }

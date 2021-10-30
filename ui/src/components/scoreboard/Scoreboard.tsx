@@ -1,29 +1,37 @@
+import {
+    Box,
+    Collapse,
+    IconButton,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Theme,
+    Typography,
+} from '@mui/material';
 import React, { useState, useEffect } from 'react';
-import { TableContainer } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-import TableHead from '@material-ui/core/TableHead';
-import TableBody from '@material-ui/core/TableBody';
-import Collapse from '@material-ui/core/Collapse';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import DeleteIcon from '@material-ui/icons/Delete';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import IconButton from '@material-ui/core/IconButton';
-
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { DeletePlayerScore } from '../../services/ScoreboardService';
+import { makeStyles, createStyles, useTheme } from '@mui/styles';
 
-const useRowStyles = makeStyles({
-    root: {
-        '& > *': {
-            borderBottom: 'unset',
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            '& > *': {
+                borderBottom: 'unset',
+            },
         },
-    },
-    tableCell: {},
-});
+        table: {
+            margin: 'auto',
+            maxWidth: '600px',
+        },
+    }),
+);
 
 export type Player = {
     name: string;
@@ -51,7 +59,8 @@ export default function Scoreboard(props: {
     updateState: () => Promise<void>;
 }) {
     const [open, setOpen] = useState(new Map());
-    const classes = useRowStyles();
+    const classes = useStyles();
+    const theme = useTheme();
 
     const setOpens = (name: string) => {
         const isOpen = open.get(name);
@@ -75,54 +84,49 @@ export default function Scoreboard(props: {
     }, [props]);
 
     return (
-        <TableContainer>
+        <TableContainer component={Paper} sx={{ borderRadius: 2 }} className={classes.table}>
             <Table size='medium'>
                 <TableHead>
                     <TableRow>
                         <TableCell padding='none'></TableCell>
-                        <TableCell style={{ fontWeight: 'bold' }} padding='none'>
-                            Name
-                        </TableCell>
-                        <TableCell style={{ fontWeight: 'bold' }} padding='none'>
-                            Points
-                        </TableCell>
-                        <TableCell style={{ fontWeight: 'bold' }} padding='none'>
-                            Last played
-                        </TableCell>
-                        <TableCell style={{ fontWeight: 'bold' }} padding='none'>
-                            Snek
-                        </TableCell>
+                        <TableCell padding='none'></TableCell>
+                        <TableCell padding='none'></TableCell>
+                        <TableCell padding='none'></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {props.players.map((player: Player) => (
                         <React.Fragment key={player.name}>
-                            <TableRow className={classes.root}>
-                                <IconButton aria-label='expand row' size='small' onClick={() => setOpens(player.name)}>
-                                    {open.get(player.name) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                </IconButton>
-                                <TableCell padding='none'>{player.name}</TableCell>
-                                <TableCell key={player.points} padding='none' component='th' scope='row'>
+                            <TableRow sx={{ borderRadius: 10 }} className={classes.root}>
+                                <TableCell padding='none'>
+                                    <IconButton aria-label='expand row' onClick={() => setOpens(player.name)}>
+                                        {open.get(player.name) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell
+                                    key={player.points}
+                                    padding='none'
+                                    style={{ fontWeight: 'bold', color: theme.palette.secondary.dark }}
+                                >
                                     {player.points}
                                 </TableCell>
-                                <TableCell padding='none'>{player.lastPlayed}</TableCell>
-                                <TableCell padding='none'>
-                                    {player.holderOfSnek ? String.fromCodePoint(0x1f40d) : ''}
+                                <TableCell style={{ color: theme.palette.secondary.main }} padding='none'>
+                                    {player.name}
+                                </TableCell>
+                                <TableCell padding='none' style={{ color: theme.palette.secondary.light }}>
+                                    {player.lastPlayed}
                                 </TableCell>
                             </TableRow>
                             <TableRow className={classes.root}>
-                                <TableCell colSpan={6}>
-                                    <Collapse in={open.get(player.name)} timeout='auto' unmountOnExit>
-                                        <Box margin={0}>
+                                <TableCell colSpan={10}>
+                                    <Collapse in={open.get(player.name)} timeout={500} unmountOnExit>
+                                        <Box>
                                             <Typography variant='h6' gutterBottom component='div'>
                                                 History
                                             </Typography>
                                             <Table size='small' aria-label='purchases'>
                                                 <TableHead>
                                                     <TableRow>
-                                                        <TableCell padding='none'>
-                                                            {String.fromCodePoint(0x1f4c5)}
-                                                        </TableCell>
                                                         <TableCell padding='none'>
                                                             {String.fromCodePoint(0x1f3cc)}
                                                         </TableCell>
@@ -138,33 +142,58 @@ export default function Scoreboard(props: {
                                                         <TableCell padding='none'>
                                                             {String.fromCodePoint(0x1f373)}
                                                         </TableCell>
+                                                        <TableCell padding='none'>
+                                                            {String.fromCodePoint(0x1f4c5)}
+                                                        </TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 {props.scores.get(player.name) ? (
                                                     <TableBody>
                                                         {props.scores.get(player.name)!.map((score: Score) => (
                                                             <TableRow key={score.id}>
-                                                                <TableCell padding='none' component='th' scope='row'>
-                                                                    {score.date}
+                                                                <TableCell
+                                                                    padding='none'
+                                                                    style={{ color: theme.palette.secondary.dark }}
+                                                                >
+                                                                    {score.points}
                                                                 </TableCell>
-                                                                <TableCell padding='none'>{score.points}</TableCell>
-                                                                <TableCell padding='none'>
+                                                                <TableCell
+                                                                    padding='none'
+                                                                    style={{ color: theme.palette.secondary.dark }}
+                                                                >
                                                                     {score.nettoTweets}
                                                                 </TableCell>
-                                                                <TableCell padding='none'>
+                                                                <TableCell
+                                                                    padding='none'
+                                                                    style={{ color: theme.palette.secondary.dark }}
+                                                                >
                                                                     {score.nettoEagles}
                                                                 </TableCell>
-                                                                <TableCell padding='none'>
+                                                                <TableCell
+                                                                    padding='none'
+                                                                    style={{ color: theme.palette.secondary.dark }}
+                                                                >
                                                                     {score.holderOfSnek
                                                                         ? String.fromCodePoint(0x1f40d)
                                                                         : ''}
                                                                 </TableCell>
-                                                                <TableCell padding='none'>{score.muligans}</TableCell>
+                                                                <TableCell
+                                                                    padding='none'
+                                                                    style={{ color: theme.palette.secondary.dark }}
+                                                                >
+                                                                    {score.muligans}
+                                                                </TableCell>
+                                                                <TableCell
+                                                                    style={{ color: theme.palette.secondary.light }}
+                                                                    padding='none'
+                                                                >
+                                                                    {score.date}
+                                                                </TableCell>
                                                                 <TableCell
                                                                     padding='none'
                                                                     onClick={() => deleteScore(score.id).then()}
                                                                 >
-                                                                    <DeleteIcon />
+                                                                    <DeleteForeverRoundedIcon />
                                                                 </TableCell>
                                                             </TableRow>
                                                         ))}

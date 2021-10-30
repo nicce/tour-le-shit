@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import MenuItem from '@material-ui/core/MenuItem';
 import { SubmitScorecard } from '../../services/ScoreboardService';
 import useSound from 'use-sound';
-import season from '../season';
+import { Button, Dialog, DialogContent, TextField, MenuItem, DialogActions } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import currentSeason from '../season';
 
 type Scorecard = {
     name: string;
@@ -21,7 +15,7 @@ type Scorecard = {
     season: number;
 };
 
-export function ScorecardForm(props: { updateState: () => Promise<void> }) {
+export function ScorecardForm(props: { updateState: () => Promise<void>; season: number }) {
     const [name, setName] = useState('');
     const [snek, setSnek] = useState('');
     const [stablefordPoints, setStablefordPoints] = useState('0');
@@ -88,7 +82,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
             nettoTweets: +nettoTweets,
             nettoEagles: +nettoEagles,
             muligans: +muligans,
-            season: season,
+            season: props.season,
         };
         if (scorecard.holderOfSnek) {
             playSnek();
@@ -129,17 +123,12 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
     };
 
     return (
-        <div>
-            <Button color='inherit' onClick={handleClickOpen}>
-                +
+        <>
+            <Button disabled={currentSeason !== props.season} color='inherit' onClick={handleClickOpen}>
+                <AddIcon />
             </Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
-                <DialogTitle id='form-dialog-title'>Add score</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        Please post your scorecard from your tour-le-shit round. We expect it went &#128169; except if
-                        your name is Alexander.
-                    </DialogContentText>
                     <form>
                         <TextField
                             required={true}
@@ -222,6 +211,6 @@ export function ScorecardForm(props: { updateState: () => Promise<void> }) {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </>
     );
 }
