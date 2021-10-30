@@ -10,7 +10,7 @@ export default function Info() {
             color='secondary'
             style={{ paddingTop: theme.spacing(2), margin: 'auto', maxWidth: '600px' }}
         >
-            v2.0.0
+            v2.0.1
         </Typography>
     );
 }
