@@ -11,7 +11,7 @@ export default function Info() {
             color='secondary'
             style={{ paddingTop: theme.spacing(2), margin: 'auto', maxWidth: '600px' }}
         >
-            v{'1.2.1'}
+            v2.0.0
         </Typography>
     );
 }
