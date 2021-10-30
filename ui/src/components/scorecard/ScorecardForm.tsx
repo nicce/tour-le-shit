@@ -3,6 +3,7 @@ import { SubmitScorecard } from '../../services/ScoreboardService';
 import useSound from 'use-sound';
 import { Button, Dialog, DialogContent, TextField, MenuItem, DialogActions } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import currentSeason from '../season';
 
 type Scorecard = {
     name: string;
@@ -123,7 +124,7 @@ export function ScorecardForm(props: { updateState: () => Promise<void>; season:
 
     return (
         <>
-            <Button color='inherit' onClick={handleClickOpen}>
+            <Button disabled={currentSeason !== props.season} color='inherit' onClick={handleClickOpen}>
                 <AddIcon />
             </Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>

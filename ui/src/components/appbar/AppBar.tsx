@@ -5,10 +5,11 @@ import Scoreboard, { Player } from '../scoreboard/Scoreboard';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import { GetPlayerScores, GetScoreboard } from '../../services/ScoreboardService';
 import { AppBar, Toolbar, Typography } from '@mui/material';
+import currentSeason from '../season';
 
 export default function ButtonAppBar() {
     const [state, setState] = useState({ scoreboard: [], scores: new Map() });
-    const [season, setSeason] = useState(1); // Default season, will be changed to 2 next year.
+    const [season, setSeason] = useState(currentSeason); // Default season, will be changed to 2 next year.
     useEffect(() => {
         fetchScoreboard();
     }, [season]);
