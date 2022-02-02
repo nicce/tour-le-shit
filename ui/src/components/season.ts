@@ -1,3 +1,3 @@
-const currentSeason = 1;
+const currentSeason = 2;
 
 export default currentSeason;
